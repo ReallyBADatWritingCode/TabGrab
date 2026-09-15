@@ -29,7 +29,7 @@ const getClosableTabs = async () => {
 };
 
 const AI_Organize = async (title, url) => {
-  const resp = await fetch("http://localhost:3000/organize", {
+  const resp = await fetch("https://tabgrab-server.onrender.com/organize", {
     method: "POST",
     headers : {
       "Content-Type": "application/json"
