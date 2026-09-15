@@ -1,0 +1,172 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../images/BaksoSapi.otf') format('opentype');
+}
+
+body {
+    background: url("../images/popup_bg.png");
+    background-position: center top;
+    background-size: 100vw auto;
+    min-height: 100vh;
+    margin-top: 50;
+    width: 400px;
+    height: 240px;
+    padding: 15px;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+
+    background-size: 100% 100%;
+    background-position: center;
+    image-rendering: pixelated;
+    background-repeat: no-repeat;
+    
+    position: relative;
+}
+
+
+.automatic_use, .timer_for_tab {
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 8px;
+}
+
+#dashboard_button {
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    background-color: rgb(183, 203, 235);
+    box-shadow: 0 5px 0 rgb(65, 80, 115);
+    width: 160px;
+    height: 40px;
+    border-radius: 10px;
+
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin: 0 auto;
+    margin-top: 10px;
+    display: block;
+}
+
+.setTime {
+    border: 2px solid black;
+    background-color: rgb(183, 203, 235);
+    border-radius: 10px;
+    margin-right: 2px;
+
+    font-family: 'MyCustomFont', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border: 5px solid black;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+
+
+.timer-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-width: 190px;
+    margin: 0;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background: #ffe0e0;
+    border: 1px solid #cc3b3b;
+    color: #8b1f1f;
+    font-size: 11px;
+    line-height: 1.25;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 1.5px;
+    text-align: right;
+}
+
+.timer-status.hidden {
+    display: none;
+}
+
+.interactables{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-top: 8px;
+    width: 100%;
+}
+
+.links {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 25px;
+
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+}
+
+.youtubeLink,
+.itchIo_Link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.links img {
+    width: 15px;
+    height: 15px;
+    image-rendering: pixelated;
+}
+
+a {
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    color: white;
+}
+
+label {
+    -webkit-text-stroke: 0.1px black;
+    margin-right: 2px;
+    margin-left: 2px;
+    color: white;
+    font-size: 18px;
+}
+
+.close_time_select {
+    margin-bottom: 3px;
+    width: 100%;
+    position: relative;
+    left: auto;
+    font-family: 'MyCustomFont', sans-serif;
+    color: white;
+    letter-spacing: 2.5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.close_time_select p {
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+}

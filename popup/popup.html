@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container"> 
+        <div class="interactables">
+            <div class="timer_for_tab">
+                <input type="checkbox" id="timer_for_tab" name="timer_for_tab_checkbox" checked>
+                <label for="timer_for_tab">Enable Timer</label>
+            </div>
+            <div class="automatic_use">
+                <input type="checkbox" id="automatic" name="automatic_checkbox" checked>
+                <label for="automatic">Automatic</label>
+            </div>
+            <div class="close_time_select">
+                <p>Close Time</p>
+                <button class="setTime">
+                    Start Timer
+                </button>
+                <input value="0" type="number" inputmode="numeric" min="0" max="5" step="1" id="hours" name="hours">
+                <label for="hours">H</label>
+                <input value="1" type="number" inputmode="numeric" min="0" max="60" step="1" id="minutes" name="minutes">
+                <label for="minutes">M</label>
+                <input value="0" type="number" inputmode="numeric" min="0" max="60" step="1" id="seconds" name="seconds">
+                <label for="seconds">S</label>
+            </div>
+            <div id="timerStatus" class="timer-status hidden">Timer Stopped</div>
+            <button id="dashboard_button"> Dashboard </button>
+        </div>
+        <div class="links">
+            <div class="youtubeLink">
+                <img src="../images/youtubeIcon.png"></img>
+                <a href="">youtube.com</a>
+            </div>
+            <div class="itchIo_Link">
+                <img src="../images/itchioIcon.png"></img>
+                <a href="">itch.io</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="popup.js"></script> 
+</body>
+</html>

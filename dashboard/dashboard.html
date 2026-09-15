@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="topBar">
+
+        <div class="TabGrab">
+            <img src="../images/tabgrablogo.png" id="TabGrab_Icon" name="Icon"></img>
+        </div>
+        <!--
+        <div class="search_bar">
+            <form>
+                <input type="search" id="search" name="search", placeholder="Search...">
+                <button type="button" class="search_button">
+                    <img src="../images/questionMark.png">
+                </button>
+            </form>
+        </div>
+        -->
+
+    </div>
+    <img src="../images/tabGrabtext.png" id="Title" name="Icon"></img>
+    
+    <div class="storage">
+        <button class="New_Folder" id="New_Folder">
+            + New Folder
+        </button>
+        <div id="folders">
+        </div>
+    </div>
+
+    <div class="SideBar_Group">
+        <button class="openSideBar">Open SideBar</button>
+        <div class="SideBar">
+            <div class="SideBar_Selected">
+                <label class="folderID">Folder ID: </label>
+                <form class="Name">
+                    <label>Name </label>
+                    <input type="text" name="nameInput" id="nameInput">
+                </form>
+                <label class="Enter-Right">Please Enter a Name</label>
+                <button class="Submit-Name">Change Name</button>
+                <form class="Link" style="display:none">
+                    <label>Link </label>
+                    <input type="text" name="linkInput" id="linkInput">
+                </form>
+                <label class="Enter-Right-Link">Please Enter a Link</label>
+                <button class="Submit-Link">Change Link</button>
+                <br>
+            </div>
+            <div class="SideBar_Not_Selected">
+                <label>No folder or tab selected</label>
+            </div>
+            <button class="closeSideBar">Close SideBar</button>
+        </div>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>

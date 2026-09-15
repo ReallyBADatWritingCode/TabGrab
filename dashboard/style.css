@@ -1,0 +1,371 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../images/BaksoSapi.otf') format('openType');
+}
+
+body {
+    background-image: url('../images/dashboard_bg.png');
+    background-position: center top;
+    background-size: 100vw auto;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.TabGrab {
+    display: flex;
+    align-items: center;
+}
+
+#TabGrab_Icon {
+    width: 150px;
+    height: auto;
+    display: block;
+}
+
+.search_bar {
+    display: flex;
+    align-items: center;
+}
+
+.search_bar form {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search_button {
+    border-radius: 5px;
+    border: 2px solid black;
+    background-color: rgb(232, 236, 243);
+}
+
+.search_button img {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 18px;
+    height: auto;
+}
+
+#search {
+    width: 160px;
+    height: 26px;
+}
+
+#Title {
+    display: block;
+    width: 250px;
+    height: auto;
+    margin: 50px auto 30px auto;
+}
+
+.storage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.FolderInstance {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+[class^="folder-header-"] {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    border-radius: 6px;
+    background-color: rgb(183, 203, 235);
+    box-shadow: 0 5px 0 rgb(65, 80, 115);
+}
+
+[class^="folder-header-"] label { 
+    width: 400px;
+}
+
+[class^="folder-header-"]:hover {
+    background-color: hsla(217, 24%, 70%, 1);
+}
+
+[class^="folder-tabs-"] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 24px;
+}
+
+.TabInstance {
+    position: relative;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 50px;
+    border-radius: 6px;
+    background-color: rgb(221, 230, 245);
+    box-shadow: 0 5px 0 rgb(65, 80, 115);
+    font-size: 20px;
+    font-family: 'MyCustomFont', sans-serif;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.TabInstance img{
+    margin-left: 10px;
+}
+
+.TabInstance a {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: black;
+}
+
+.TabInstance .tab-title {
+    min-width: 0;
+    flex: 1;
+    margin: 0 20px;
+}
+
+.TabInstance img {
+    width: 20px;
+    height: auto;
+}
+
+.TabInstance:hover {
+    background-color: hsla(217, 24%, 70%, 1);
+}
+
+.newTab,
+.removeTab,
+.removeFolder,
+.seeTabs,
+.hideTabs {
+    border: 1px solid rgb(20, 30, 55);
+    border-radius: 4px;
+    background-color: rgb(240, 244, 250);
+    box-shadow: 0 2px 0 rgb(80, 90, 120);
+    cursor: pointer;
+}
+
+.newTab,
+.removeTab {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.New_Folder {
+    width: 200px;
+    height: 30px;
+    font-family: 'MyCustomFont', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    border-radius: 10px;
+    border: 2px solid rgb(20, 30, 55);
+    box-shadow: 0 3px 0 rgb(55, 70, 105);
+    cursor: pointer;
+}
+
+.removeFolder {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.seeTabs,
+.hideTabs {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 10px;
+    text-decoration: none;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.SideBar_Group {
+    position: fixed;
+    right: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.SideBar {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 100dvh;
+    border-radius: 5px;
+    background-color: hsla(0, 0%, 48%, 0.623);
+    outline: 2px solid black;
+}
+
+.SideBar_Selected {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px auto;
+}
+
+.SideBar_Not_Selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.openSideBar {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 10px;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    font-size: 20px;
+    border-radius: 10px;
+    outline: 2px solid black;
+}
+
+.closeSideBar {
+    margin-top: 10px;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    font-size: 20px;
+    border-radius: 10px;
+    outline: 2px solid black;
+}
+
+.Submit-Name {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    font-size: 15px;
+    border-radius: 10px;
+    outline: 2px solid black;
+}
+
+.Submit-Link {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: 'MyCustomFont', sans-serif;
+    letter-spacing: 2.5px;
+    font-size: 15px;
+    border-radius: 10px;
+    outline: 2px solid black;
+    display: none;
+}
+
+
+input {
+    height: 32px;
+    width: 70%;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 16px;
+    color: #333333;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.Enter-Right, .Enter-Right-Link {
+    margin-bottom: 5px;
+    color: rgb(226, 79, 79);
+    display: none;
+}
+
+.Name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px auto;
+}
+
+.Link {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px auto;
+    display: none;
+}
+
+.Name label {
+    font-size: 32px;
+}
+
+.Link label {
+    font-size: 32px;
+    display: flex;
+}
+
+#nameInput {
+    border-radius: 5px;
+    outline: none;
+}
+
+@keyframes OpenSideBarAnim {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes CloseSideBarAnim {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
