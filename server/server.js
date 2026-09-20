@@ -84,7 +84,9 @@ async function GeneratePageText(url){
 
     const $ = cheerio.load(response.data);
     const pageData = {
+        url,
         title: $("title").text(),
+        description: $("meta[name='description'], meta[property='og:description']").attr("content") || "",
         headings: $("h1, h2, h3").map((i, el) => $(el).text()).get(),
         paragraphs: $("p").map((i, el) => $(el).text()).get(),
         lists: $("li").map((i, el) => $(el).text()).get(),
@@ -111,7 +113,7 @@ async function Generate_TabSummary(pageData, title) {
                 Webpage data:
                 ${JSON.stringify(pageData)}
 
-                If pagetext is empty or doesn't give details say, unable to generate summary
+                If the page data is unavailable, give the best concise description possible from the title and URL. Do not respond with "unable to generate summary" unless both the title and URL are missing.
                 Focus on the main topic, purpose, and most important information. Only use information supported by the provided webpage text. Do not make up or assume information that is not present. Do not mention that you are summarizing the text.
                         `,
             config: {
@@ -146,13 +148,15 @@ app.post("/summarize", async(req, res) => {
         } catch (error) {
             console.warn(`[summarize] Could not fetch ${url}:`, error.message);
             pageData = {
+                url: url || "",
                 title: title || "",
+                description: "",
                 headings: [],
                 paragraphs: [],
                 lists: [],
                 images: [],
                 videos: [],
-                fetchError: "The page could not be fetched; summarize from the title and URL only."
+                fetchError: "The page could not be fetched; use the title and URL only."
             };
         }
 
