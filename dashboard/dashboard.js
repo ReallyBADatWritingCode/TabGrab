@@ -535,10 +535,8 @@ const sendMessage = async () => {
     chatBot_input.disabled = true;
 
     try {
-        const selectedTab = folders
-            .flatMap(folder => folder.tabs || [])
-            .find(tab => String(tab.id) === String(selectedTab_ID));
-        const response = await fetchChat_Response(message, selectedTab || null);
+        const { folders: tab_data = [] } = await chrome.storage.local.get(["folders"]);
+        const response = await fetchChat_Response(message, tab_data);
         addChatMessage(response, "assistant_message");
     } catch (error) {
         console.error("[Dashboard:chat] failed", error);

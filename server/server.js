@@ -16,9 +16,13 @@ app.use(cors());
 app.use(express.json());
 
 async function Register_UserMessage(message, tab_data){
+    const readableTabData = JSON.stringify(tab_data ?? {}, null, 2);
     const response = await ai.models.generateContent({
         model : "gemini-3.1-flash-lite",
-        contents : `Answer the users message/question : ${message}, Tab Data : ${tab_data}`,
+        contents : `Answer the user's message/question: ${message}
+
+                    Tab data:
+                    ${readableTabData}`,
         config: {
                 thinkingConfig: {
                     thinkingLevel: "low"
