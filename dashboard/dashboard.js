@@ -12,6 +12,7 @@ let changeLink_bttn = document.querySelector(".Submit-Link")
 let changeLink_Input = document.getElementById("linkInput")
 let changeLink_form = document.querySelector(".Link")
 let changeLink_Enter_right = document.querySelector(".Enter-Right-Link")
+let tabSummary = document.querySelector(".TabSummary")
 
 
 const folder_map = new Map();
@@ -72,6 +73,7 @@ search_button.onclick = async () => {
     }
 }
 */
+
 
 document.addEventListener("DOMContentLoaded", function() {
     chrome.storage.local.get(["folders", "folderNum", "tabNum"], function(data) {
@@ -147,7 +149,7 @@ function RetrieveFolders(expandedFolderIds = new Set()) {
 
 
 
-const updateSidebar = (folder) => {
+const updateSidebar = (folder, summary) => {
     const selectionType = folder ? selectedFolder_ID : selectedTab_ID;
     const hasSelection = selectionType !== null;
     sideBar_selected.style.display = hasSelection ? "flex" : "none";
@@ -158,11 +160,15 @@ const updateSidebar = (folder) => {
         changeLink_Enter_right.style.display = "none"
         changeLink_Input.style.display = "none";
         changeLink_bttn.style.display = "none"
+        tabSummary.style.display = "none";
     }else{
         currFolder_ID.textContent = "Tab ID : " + String(selectedTab_ID);
         changeLink_form.style.display = "flex"
         changeLink_Input.style.display = "flex";
         changeLink_bttn.style.display = "flex"
+        tabSummary.style.display = "flex"
+        const tabSum_label = document.querySelector(".TabSummary_Label");
+        tabSum_label.textContent = summary;
     }
 };
 
@@ -231,6 +237,7 @@ export class TabInstance{
         this.element = document.createElement("div");
         this.element.className = "TabInstance";
         this.element.dataset.tabId = this.id;
+        this.summary = tab.summary;
         this.element.innerHTML = `
             <img src="${this.icon}" alt="">
             <div class="tab-title">
@@ -267,7 +274,7 @@ export class TabInstance{
             selectedTab_ID = this.id;
             selectedFolder_ID = null;
             console.log("changed:", selectedTab_ID);
-            updateSidebar(false);
+            updateSidebar(false, this.summary);
         });
     }
 }
@@ -304,7 +311,7 @@ export class FolderInstance {
             selectedFolder_ID = this.element.id;
             selectedTab_ID = null;
             console.log("changed:", selectedFolder_ID);
-            updateSidebar(true);
+            updateSidebar(true, null);
         });
         // Re-initialize when dashboard reload
         toggleBtn.textContent = ">";
@@ -336,7 +343,7 @@ export class FolderInstance {
                         tabNum: tabNum
                     });
             }
-            updateSidebar(true);
+            updateSidebar(true, null);
         };
 
         newTab.onclick = () => {

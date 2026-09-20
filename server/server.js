@@ -3,6 +3,8 @@ require("dotenv").config();
 const { GoogleGenAI } = require("@google/genai");
 const express = require("express")
 const cors = require("cors");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const app = express();
 
@@ -68,6 +70,45 @@ async function Organize(title, url) {
     return response.text.trim();
 }
 
+async function GeneratePageText(url){
+    const response = await axios.get(url, {
+        timeout: 5000,
+        headers: {
+            "User-Agent" : "Mozilla/5.0"
+        }
+    });
+
+    const $ = cheerio.load(response.data);
+    $("script, style, nav, footer, header").remove();
+    const text = $("body").text();
+    return text.replace(/\s+/g, " ").trim();
+}
+
+async function Generate_TabSummary(pageText, title) {
+    const response = await ai.models.generateContent({
+            model: "gemini-3.1-flash-lite",
+
+            contents: `
+                Based on the webpage text below, write a concise 2–3 sentence summary of the webpage.
+
+                Title: ${title}
+
+                Webpage text:
+                ${pageText}
+
+                If pagetext is empty or doesn't give details say, unable to generate summary
+                Focus on the main topic, purpose, and most important information. Only use information supported by the provided webpage text. Do not make up or assume information that is not present. Do not mention that you are summarizing the text.
+                        `,
+            config: {
+                thinkingConfig: {
+                    thinkingLevel: "low"
+                }
+            }
+        });
+
+    return response.text.trim();
+}
+
 app.post("/organize", async (req, res) => {
     const {title, url} = req.body;
 
@@ -77,6 +118,19 @@ app.post("/organize", async (req, res) => {
     }catch(error){
         console.error(error);
 
+    }
+})
+
+app.post("/summarize", async(req, res) => {
+    const {title, url} = req.body;
+
+    try {
+        const pageText = await GeneratePageText(url);
+        const tabSummary = await Generate_TabSummary(pageText, title);
+        res.json({summary : tabSummary})
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error: "Unable to generate tab summary"});
     }
 })
 

@@ -46,6 +46,23 @@ const AI_Organize = async (title, url) => {
 
 }
 
+const AI_Summarize = async(title, url) => {
+  const resp = await fetch("https://tabgrab-server.onrender.com/summarize", {
+    method: "POST",
+    headers : {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+      title: title,
+      url: url,  
+    })
+  });
+
+  const result = await resp.json();
+  return result.summary;
+}
+
 const notifyTimerStopped = async (message) => {
   try {
     await chrome.notifications.create(`tab-timer-stopped-${Date.now()}`, {
@@ -66,11 +83,13 @@ const refreshDashboard = async () => {
 };
 
 const saveTabToDashboard = async (tab) => {
+  const summary = await AI_Summarize(tab.title, tab.url);
   const closedTab = {
     title: tab.title || tab.url,
     url: tab.url,
     icon: tab.favIconUrl,
     id: tab.id,
+    summary
   };
 
   const folderName = await AI_Organize(closedTab.title, closedTab.url);
@@ -129,6 +148,7 @@ const closeNextTab = async (tabId) => {
           url: tab.url,
           icon: tab.favIconUrl,
           id: tab.id,
+          summary: await AI_Summarize(tab.title, tab.url),
         };
 
         const folderName = await AI_Organize(closedTab.title, closedTab.url);
