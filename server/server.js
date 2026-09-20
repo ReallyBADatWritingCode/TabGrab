@@ -15,6 +15,19 @@ const ai = new GoogleGenAI({
 app.use(cors());
 app.use(express.json());
 
+async function Register_UserMessage(message, tab_data){
+    const response = await ai.models.generateContent({
+        model : "gemini-3.1-flash-lite",
+        contents : `Answer the users message/question : ${message}, Tab Data : ${tab_data}`,
+        config: {
+                thinkingConfig: {
+                    thinkingLevel: "low"
+                }
+            }
+    })
+    return response.text.trim()
+}
+
 async function Organize(title, url) {
     const response = await ai.models.generateContent({
             model: "gemini-3.1-flash-lite",
@@ -135,6 +148,18 @@ app.post("/organize", async (req, res) => {
     }catch(error){
         console.error(error);
 
+    }
+})
+
+app.post("/chat", async(req, res) => {
+    const {tab_data, message} = req.body;
+
+    try { 
+        const chat_response = await Register_UserMessage(message, tab_data);
+        res.json({chat_response : chat_response})
+    }catch(error){
+        console.error(error);
+        res.status(500).json({error: error.message || "Unable to generate chat response"});
     }
 })
 

@@ -1,17 +1,28 @@
 let newFolder_button = document.getElementById("New_Folder");
+let currFolder_ID = document.querySelector(".folderID");
+
 let openSideBar_button = document.querySelector(".openSideBar");
 let closeSideBar_button = document.querySelector(".closeSideBar");
 let sideBar = document.querySelector(".SideBar");
 let sideBar_selected = document.querySelector(".SideBar_Selected");
 let sideBar_not_selected = document.querySelector(".SideBar_Not_Selected");
-let currFolder_ID = document.querySelector(".folderID");
+
+let closeChatBot_button = document.querySelector(".close_chat");
+let openChatBot_button = document.querySelector(".open_chat");
+let chatBot_UI = document.querySelector(".ChatBot");
+let chatBot_input = document.querySelector("#Message_Input");
+let chatForm = document.querySelector(".chat_form");
+let chatMessages = document.querySelector(".chat_messages");
+
 let name_input = document.getElementById("nameInput")
 let enter_right = document.querySelector(".Enter-Right")
 let submit_name = document.querySelector(".Submit-Name")
+
 let changeLink_bttn = document.querySelector(".Submit-Link")
 let changeLink_Input = document.getElementById("linkInput")
 let changeLink_form = document.querySelector(".Link")
 let changeLink_Enter_right = document.querySelector(".Enter-Right-Link")
+
 let tabSummary = document.querySelector(".TabSummary")
 
 
@@ -29,6 +40,30 @@ const summaryRequests = new Map();
 const summaryFailures = new Map();
 
 const normalizeUrl = (url) => /^[a-z][a-z\d+.-]*:/i.test(url) ? url : `https://${url}`;
+
+const fetchChat_Response = async (message, tab_data) => {
+    const response = await fetch("https://tabgrab-server.onrender.com/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message, tab_data })
+    })
+
+    const result = await response.json();
+    if (!response.ok || !result.chat_response) {
+        throw new Error(result.error || `Chat request failed with status ${response.status}`);
+    }
+    return result.chat_response;
+};
+
+const addChatMessage = (text, type) => {
+    const messageElement = document.createElement("div");
+    messageElement.className = `chat_message ${type}`;
+    messageElement.textContent = text;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+};
 
 const fetchTabSummary = async (title, url) => {
     const response = await fetch("https://tabgrab-server.onrender.com/summarize", {
@@ -414,6 +449,7 @@ export class FolderInstance {
                 icon: "",
                 id: tabNum,
                 parent_id: this.element.id,
+                savedAt : Date.now()
             };
 
             tabNum++;
@@ -460,20 +496,58 @@ export const NewFolder = (folder_name) => {
     document.getElementById("folders").appendChild(folderInstance.element);
 }
 
+
 const OpenSideBar = () => {
     sideBar.style.display = 'flex'; 
     sideBar.style.animationName = 'OpenSideBarAnim';
     sideBar.style.animationDuration = '0.3s';
     openSideBar_button.style.display = 'none';
+    openChatBot_button.style.display = "none";
 }
 
 const CloseSideBar = () => {
     sideBar.style.animation = 'CloseSideBarAnim 0.3s forwards';
     setTimeout(() => {
         sideBar.style.display = 'none';
+        openChatBot_button.style.display = "flex";
         openSideBar_button.style.display = 'block';
     }, 300);
 }
+
+const openChatBot = () => {
+    chatBot_UI.style.display = "flex";
+    openChatBot_button.style.display = "none";
+    openSideBar_button.style.display = "none";
+}
+
+const closeChatBot = () => {
+    chatBot_UI.style.display = "none";
+    openChatBot_button.style.display = "flex";
+    openSideBar_button.style.display = "flex";
+}
+
+const sendMessage = async () => {
+    const message = chatBot_input.value.trim();
+    if (!message) return;
+
+    addChatMessage(message, "user_message");
+    chatBot_input.value = "";
+    chatBot_input.disabled = true;
+
+    try {
+        const selectedTab = folders
+            .flatMap(folder => folder.tabs || [])
+            .find(tab => String(tab.id) === String(selectedTab_ID));
+        const response = await fetchChat_Response(message, selectedTab || null);
+        addChatMessage(response, "assistant_message");
+    } catch (error) {
+        console.error("[Dashboard:chat] failed", error);
+        addChatMessage("Unable to get a response right now.", "assistant_message");
+    } finally {
+        chatBot_input.disabled = false;
+        chatBot_input.focus();
+    }
+};
 
 newFolder_button.onclick = () => {
     NewFolder("Folder");
@@ -486,3 +560,16 @@ openSideBar_button.onclick = () => {
 closeSideBar_button.onclick = () => {
     CloseSideBar();
 }
+
+openChatBot_button.onclick = () => {
+    openChatBot()
+}
+
+closeChatBot_button.onclick = () => {
+    closeChatBot()
+}
+
+chatForm.onsubmit = (event) => {
+    event.preventDefault();
+    sendMessage();
+};

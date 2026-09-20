@@ -151,6 +151,7 @@ const closeNextTab = async (tabId) => {
           url: tab.url,
           icon: tab.favIconUrl,
           id: tab.id,
+          savedAt: Date.now(),
           summary: await AI_Summarize(tab.title, tab.url),
         };
 
