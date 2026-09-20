@@ -107,7 +107,7 @@ async function Generate_TabSummary(pageData, title) {
 
             contents: `
                 Based on the webpage text below, write a concise 2–3 sentence summary of the webpage.
-
+                NOT TOO LONG PLEASE(even if it is 2-3 sentences)
                 Title: ${title}
 
                 Webpage data:

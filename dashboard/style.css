@@ -158,6 +158,23 @@ body {
     background-color: hsla(217, 24%, 70%, 1);
 }
 
+.TabSummary {
+    box-sizing: border-box;
+    background-color: white;
+    border : 5px solid black;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+    
+}
+
+.TabSummary_Label {
+    height: auto;
+    margin: 0;
+    font-size : 15px;
+    text-align: center;
+}
+
 .newTab,
 .removeTab,
 .removeFolder,
@@ -216,7 +233,7 @@ label {
     text-decoration: none;
     font-family: 'MyCustomFont', sans-serif;
     letter-spacing: 2.5px;
-    font-size: 20px;
+    font-size: 21px;
     line-height: 1;
 }
 
@@ -299,6 +316,7 @@ label {
     border-radius: 10px;
     outline: 2px solid black;
     display: none;
+    margin-bottom: 10px;
 }
 
 
