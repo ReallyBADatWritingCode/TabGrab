@@ -60,6 +60,9 @@ const AI_Summarize = async(title, url) => {
   });
 
   const result = await resp.json();
+  if (!resp.ok || !result.summary) {
+    throw new Error(result.error || `Summary request failed with status ${resp.status}`);
+  }
   return result.summary;
 }
 

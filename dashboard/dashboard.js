@@ -25,8 +25,37 @@ let folders = [];
 
 let selectedFolder_ID = null;
 let selectedTab_ID = null;
+const summaryRequests = new Map();
+const summaryFailures = new Map();
 
 const normalizeUrl = (url) => /^[a-z][a-z\d+.-]*:/i.test(url) ? url : `https://${url}`;
+
+const fetchTabSummary = async (title, url) => {
+    const response = await fetch("https://tabgrab-server.onrender.com/summarize", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, url })
+    });
+
+    const result = await response.json();
+    if (!response.ok || !result.summary) {
+        throw new Error(result.error || `Summary request failed with status ${response.status}`);
+    }
+    return result.summary;
+};
+
+const saveTabSummary = async (tabId, summary) => {
+    for (const folder of folders) {
+        const tab = (folder.tabs || []).find(item => String(item.id) === String(tabId));
+        if (tab) {
+            tab.summary = summary;
+            await chrome.storage.local.set({ folders, folderNum, tabNum });
+            return;
+        }
+    }
+};
 
 /*
 search_button.onclick = async () => {
@@ -168,7 +197,7 @@ const updateSidebar = (folder, summary) => {
         changeLink_bttn.style.display = "flex"
         tabSummary.style.display = "flex"
         const tabSum_label = document.querySelector(".TabSummary_Label");
-        tabSum_label.textContent = summary;
+        tabSum_label.textContent = summary || "No summary available for this tab.";
     }
 };
 
@@ -270,11 +299,43 @@ export class TabInstance{
                 }
             }
         }
-        this.element.addEventListener("mouseenter", () => {
+        this.element.addEventListener("mouseenter", async () => {
             selectedTab_ID = this.id;
             selectedFolder_ID = null;
             console.log("changed:", selectedTab_ID);
-            updateSidebar(false, this.summary);
+            if (this.summary) {
+                updateSidebar(false, this.summary);
+                return;
+            }
+
+            const lastFailure = summaryFailures.get(this.id);
+            if (lastFailure && Date.now() - lastFailure < 15000) {
+                updateSidebar(false, "Summary request was throttled. Try again in a few seconds.");
+                return;
+            }
+
+            updateSidebar(false, "Generating summary...");
+            try {
+                let summaryRequest = summaryRequests.get(this.id);
+                if (!summaryRequest) {
+                    summaryRequest = fetchTabSummary(this.title, this.url)
+                        .finally(() => summaryRequests.delete(this.id));
+                    summaryRequests.set(this.id, summaryRequest);
+                }
+
+                this.summary = await summaryRequest;
+                summaryFailures.delete(this.id);
+                await saveTabSummary(this.id, this.summary);
+                if (selectedTab_ID === this.id) {
+                    updateSidebar(false, this.summary);
+                }
+            } catch (error) {
+                summaryFailures.set(this.id, Date.now());
+                console.error("[Dashboard:summary] failed", error);
+                if (selectedTab_ID === this.id) {
+                    updateSidebar(false, "Unable to generate summary.");
+                }
+            }
         });
     }
 }

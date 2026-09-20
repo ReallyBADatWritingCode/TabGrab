@@ -21,6 +21,7 @@
         "contextMenus"
     ],
     "host_permissions": [
-        "http://localhost:3000/*"
+        "http://localhost:3000/*",
+        "https://tabgrab-server.onrender.com/*"
     ]
 }

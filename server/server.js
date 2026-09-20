@@ -71,6 +71,10 @@ async function Organize(title, url) {
 }
 
 async function GeneratePageText(url){
+    if (!url || !/^https?:\/\//i.test(url)) {
+        throw new Error("Only HTTP and HTTPS URLs can be summarized");
+    }
+
     const response = await axios.get(url, {
         timeout: 5000,
         headers: {
@@ -79,12 +83,23 @@ async function GeneratePageText(url){
     });
 
     const $ = cheerio.load(response.data);
-    $("script, style, nav, footer, header").remove();
-    const text = $("body").text();
-    return text.replace(/\s+/g, " ").trim();
+    const pageData = {
+        title: $("title").text(),
+        headings: $("h1, h2, h3").map((i, el) => $(el).text()).get(),
+        paragraphs: $("p").map((i, el) => $(el).text()).get(),
+        lists: $("li").map((i, el) => $(el).text()).get(),
+        images: $("img").map((i, el) => ({
+            alt: $(el).attr("alt"),
+            src: $(el).attr("src")
+        })).get(),
+        videos: $("video").map((i, el) => ({
+            src: $(el).attr("src")
+        })).get()
+    };
+    return pageData;
 }
 
-async function Generate_TabSummary(pageText, title) {
+async function Generate_TabSummary(pageData, title) {
     const response = await ai.models.generateContent({
             model: "gemini-3.1-flash-lite",
 
@@ -93,8 +108,8 @@ async function Generate_TabSummary(pageText, title) {
 
                 Title: ${title}
 
-                Webpage text:
-                ${pageText}
+                Webpage data:
+                ${JSON.stringify(pageData)}
 
                 If pagetext is empty or doesn't give details say, unable to generate summary
                 Focus on the main topic, purpose, and most important information. Only use information supported by the provided webpage text. Do not make up or assume information that is not present. Do not mention that you are summarizing the text.
@@ -125,12 +140,27 @@ app.post("/summarize", async(req, res) => {
     const {title, url} = req.body;
 
     try {
-        const pageText = await GeneratePageText(url);
-        const tabSummary = await Generate_TabSummary(pageText, title);
+        let pageData;
+        try {
+            pageData = await GeneratePageText(url);
+        } catch (error) {
+            console.warn(`[summarize] Could not fetch ${url}:`, error.message);
+            pageData = {
+                title: title || "",
+                headings: [],
+                paragraphs: [],
+                lists: [],
+                images: [],
+                videos: [],
+                fetchError: "The page could not be fetched; summarize from the title and URL only."
+            };
+        }
+
+        const tabSummary = await Generate_TabSummary(pageData, title);
         res.json({summary : tabSummary})
     }catch(error){
         console.error(error);
-        res.status(500).json({error: "Unable to generate tab summary"});
+        res.status(500).json({error: error.message || "Unable to generate tab summary"});
     }
 })
 
