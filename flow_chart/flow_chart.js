@@ -10,8 +10,7 @@ const AI_Connect = async (tab_data) => {
     },
 
     body: JSON.stringify({
-      title: title,
-      url: url,  
+      tab_data : tab_data 
     })
   });
   const connection_data = await resp.json();
