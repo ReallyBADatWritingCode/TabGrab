@@ -1,5 +1,4 @@
-﻿
-const MIN_TABS_TO_KEEP = 5;
+﻿const MIN_TABS_TO_KEEP = 5;
 
 const getTotalSeconds = (hours, mins, seconds) => {
   return (Number(hours) || 0) * 3600 + (Number(mins) || 0) * 60 + (Number(seconds) || 0);
@@ -43,7 +42,6 @@ const AI_Organize = async (title, url) => {
 
   const result = await resp.json();
   return result.folder;
-
 }
 
 const AI_Summarize = async(title, url) => {
@@ -92,7 +90,8 @@ const saveTabToDashboard = async (tab) => {
     url: tab.url,
     icon: tab.favIconUrl,
     id: tab.id,
-    summary
+    summary,
+    savedAt : Date.now()
   };
 
   const folderName = await AI_Organize(closedTab.title, closedTab.url);

@@ -1,0 +1,15 @@
+.nodes_container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	padding: 24px;
+}
+
+.Tab_Node {
+	position : absolute;
+	min-width: 180px;
+	padding: 16px;
+	border: 2px solid #1f2937;
+	border-radius: 8px;
+	background-color: #e5edf9;
+}

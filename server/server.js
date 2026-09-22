@@ -21,6 +21,8 @@ async function Register_UserMessage(message, tab_data){
         model : "gemini-3.1-flash-lite",
         contents : `Answer the user's message/question: ${message}
 
+                Use the tab data to answer accurately. The savedAt field is the time the tab was saved to this dashboard, not the browser's original creation time. If a tab has no savedAt field, say that its save time was not recorded. Convert savedAt.date into a natural date and time when answering.
+
                     Tab data:
                     ${readableTabData}`,
         config: {
@@ -30,6 +32,33 @@ async function Register_UserMessage(message, tab_data){
             }
     })
     return response.text.trim()
+}
+
+async function Connection_Create(tab_data){
+    let connection_data = new Map()
+    for(let node1 of tab_data){
+        connection_data.set(node1, [])
+        for(let node2 of tab_data){
+            const readableNode1 = JSON.stringify(node1 ?? {}, null, 2);
+            const readableNode2 = JSON.stringify(node2 ?? {}, null, 2);
+            const response = await ai.models.generateContent({
+                model : "gemini-3.1-flash-lite",
+                contents : `
+                            Tell me based on these two Tab Data's if they are in some way relevant(thru summary, title, etc)
+                            Tab Data 1: ${readableNode1}
+                            Tab Data 2: ${readableNode2}
+                            Return either YES or NO
+                `,
+                config: {
+                        thinkingConfig: {
+                            thinkingLevel: "low"
+                        }
+                    }
+            })
+            if(response.text.trim() == "YES") connection_data.set(node1, connection_data.get(node1).push(node2))
+        }
+    }
+    return connection_data;
 }
 
 async function Organize(title, url) {
@@ -142,6 +171,16 @@ async function Generate_TabSummary(pageData, title) {
 
     return response.text.trim();
 }
+
+app.post("/connect", async (req, res) => {
+    const {tab_data} = req.body;
+    try {
+        const connection_data = await Connection_Create(tab_data);
+        res.json({connection_data:connection_data});
+    }catch(error){
+        console.error(error);
+    }
+})
 
 app.post("/organize", async (req, res) => {
     const {title, url} = req.body;

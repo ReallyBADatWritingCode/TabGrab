@@ -14,6 +14,8 @@ let chatBot_input = document.querySelector("#Message_Input");
 let chatForm = document.querySelector(".chat_form");
 let chatMessages = document.querySelector(".chat_messages");
 
+let open_flowChart = document.querySelector(".open_flow");
+
 let name_input = document.getElementById("nameInput")
 let enter_right = document.querySelector(".Enter-Right")
 let submit_name = document.querySelector(".Submit-Name")
@@ -63,6 +65,7 @@ const addChatMessage = (text, type) => {
     messageElement.textContent = text;
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    return messageElement;
 };
 
 const fetchTabSummary = async (title, url) => {
@@ -531,15 +534,18 @@ const sendMessage = async () => {
     if (!message) return;
 
     addChatMessage(message, "user_message");
+    const generatingMessage = addChatMessage("Generating...", "assistant_message generating_message");
     chatBot_input.value = "";
     chatBot_input.disabled = true;
 
     try {
         const { folders: tab_data = [] } = await chrome.storage.local.get(["folders"]);
         const response = await fetchChat_Response(message, tab_data);
+        generatingMessage.remove();
         addChatMessage(response, "assistant_message");
     } catch (error) {
         console.error("[Dashboard:chat] failed", error);
+        generatingMessage.remove();
         addChatMessage("Unable to get a response right now.", "assistant_message");
     } finally {
         chatBot_input.disabled = false;
@@ -571,3 +577,7 @@ chatForm.onsubmit = (event) => {
     event.preventDefault();
     sendMessage();
 };
+
+open_flowChart.onclick = () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("flow_chart/flow_chart.html") });
+}
