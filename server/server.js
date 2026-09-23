@@ -78,6 +78,9 @@ ${readableTabData}
         }
 
     });
+    new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Gemini request timed out")), 30000)
+    )
    const text = response.text.trim();
    console.log("AI connection response : ", text);
    const parsed = JSON.parse(text);
