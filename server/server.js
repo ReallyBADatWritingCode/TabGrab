@@ -78,9 +78,6 @@ ${readableTabData}
         }
 
     });
-    new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Gemini request timed out")), 30000)
-    )
    const text = response.text.trim();
    console.log("AI connection response : ", text);
    const parsed = JSON.parse(text);
@@ -199,6 +196,19 @@ async function Generate_TabSummary(pageData, title) {
 }
 
 app.post("/connect", async (req, res) => {
+    console.log("CONNECT REQUEST RECEIVED");
+
+    const timeout = setTimeout(() => {
+
+        console.error("CONNECT TIMED OUT");
+
+        if (!res.headersSent) {
+            res.status(504).json({
+                error: "Connection generation timed out"
+            });
+        }
+
+    }, 30000);
     const {tab_data} = req.body;
     try {
         const connection_data = await Connection_Create(tab_data);
