@@ -1,6 +1,8 @@
 let folders = [];
+let allNodes = [];
 
 let global_connections = {};
+
 
 const AI_Connect = async (tab_data) => {
   const resp = await fetch("https://tabgrab-server.onrender.com/connect", {
@@ -13,12 +15,12 @@ const AI_Connect = async (tab_data) => {
       tab_data : tab_data 
     })
   });
-  const connection_data = await resp.json();
-  return connection_data;
+  if (!resp.ok) {
+    throw new Error(`Connection request failed: ${resp.status}`);
+  }
+  const data = await resp.json();
+  return data.connection_data;
 }
-
-global_connections = AI_Connect(chrome.storage.local.get(["folders"]))
-console.log(global_connections);
 
 class TabNode {
     constructor(tab){
@@ -57,7 +59,9 @@ class TabNode {
     }
 
     connectTo(connection_node){
-        this.connections.push(connection_node);
+        if (!this.connections.includes(connection_node)) {
+            this.connections.push(connection_node);
+        }
     }
 }
 
@@ -66,11 +70,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     folders = data.folders || [];
     const allTabs = [];
     folders.forEach(folder => {
+        folder.tabs = folder.tabs || [];
+        folder.tabs.forEach(tab => {
+            const node_container = document.querySelector(".nodes_container");
+            const nodeInstance = new TabNode(tab);
+            node_container.append(nodeInstance.element);
+        });
         if(folder.tabs){
             folder.tabs.forEach(tab => allTabs.push(tab));
         }
     })
     if(allTabs.length > 0){
+        allTabs.forEach(tab => {
+            const node = new TabNode(tab);
+            allNodes.push(node);
+        })
+        console.log("About to call AI_Connect");
         global_connections = await AI_Connect(allTabs)
         console.log(global_connections)
     }

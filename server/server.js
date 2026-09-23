@@ -36,32 +36,52 @@ async function Register_UserMessage(message, tab_data){
 
 async function Connection_Create(tab_data){
     let connection_data = {}
-    for(let node1 of tab_data){
-        const node1Key = typeof node1 === 'object' ? node1.url || JSON.stringify(node1) : node1;
-        connection_data[node1Key] = [];
-        for(let node2 of tab_data){
-            const readableNode1 = JSON.stringify(node1 ?? {}, null, 2);
-            const readableNode2 = JSON.stringify(node2 ?? {}, null, 2);
-            const response = await ai.models.generateContent({
-                model : "gemini-3.1-flash-lite",
-                contents : `
-                            Tell me based on these two Tab Data's if they are in some way relevant(thru summary, title, etc)
-                            Tab Data 1: ${readableNode1}
-                            Tab Data 2: ${readableNode2}
-                            Return either YES or NO
-                `,
-                config: {
-                        thinkingConfig: {
-                            thinkingLevel: "low"
-                        }
-                    }
-            })
-            if(response.text.trim() === "YES") {
-                connection_data[node1Key].push(node2);
+    const response = await ai.models.generateContent({
+
+        model: "gemini-3.1-flash-lite",
+
+        contents: `
+You are analyzing a collection of saved browser tabs.
+
+Determine which tabs are meaningfully related based on their
+titles, URLs, summaries, and other available information.
+
+Return ONLY valid JSON in this format:
+
+{
+    "connections": [
+        {
+            "tab1": "URL OF TAB 1",
+            "tab2": "URL OF TAB 2"
+        }
+    ]
+}
+
+Rules:
+- Only include meaningful relationships.
+- Do not connect unrelated tabs.
+- Do not connect a tab to itself.
+- Each relationship should only appear once.
+- Use the exact URLs provided.
+- If there are no meaningful relationships, return:
+  {"connections":[]}
+
+Saved tabs:
+
+${readableTabData}
+        `,
+
+        config: {
+            thinkingConfig: {
+                thinkingLevel: "low"
             }
         }
-    }
-    return connection_data;
+
+    });
+   const text = response.text.trim();
+   console.log("AI connection response : ", text);
+   const parsed = JSON.parse(text);
+   return parsed.connections;
 }
 
 async function Organize(title, url) {
