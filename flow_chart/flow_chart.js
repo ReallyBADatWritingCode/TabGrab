@@ -5,22 +5,46 @@ let global_connections = {};
 
 
 const AI_Connect = async (tab_data) => {
-  const resp = await fetch("https://tabgrab-server.onrender.com/connect", {
-    method: "POST",
-    headers : {
-      "Content-Type": "application/json"
-    },
 
-    body: JSON.stringify({
-      tab_data : tab_data 
-    })
-  });
-  if (!resp.ok) {
-    throw new Error(`Connection request failed: ${resp.status}`);
-  }
-  const data = await resp.json();
-  return data.connection_data;
-}
+    console.log("AI_Connect started");
+
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+        controller.abort();
+    }, 35000);
+
+    try {
+        const resp = await fetch(
+            "https://tabgrab-server.onrender.com/connect",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tab_data: tab_data
+                }),
+                signal: controller.signal
+            }
+        );
+        if (!resp.ok) {
+            throw new Error(
+                `Connection request failed: ${resp.status}`
+            );
+        }
+        const data = await resp.json();
+        console.log("AI_Connect finished");
+        return data.connection_data;
+    } catch (error) {
+        if (error.name === "AbortError") {
+            throw new Error("Connection request timed out");
+        }
+        throw error;
+    } finally {
+        clearTimeout(timeout);
+    }
+};
 
 class TabNode {
     constructor(tab){

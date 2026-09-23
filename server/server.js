@@ -33,6 +33,7 @@ async function Register_UserMessage(message, tab_data){
     })
     return response.text.trim()
 }
+
 async function Connection_Create(tab_data) {
 
     console.log("Connection_Create started");
@@ -44,11 +45,13 @@ async function Connection_Create(tab_data) {
     }));
 
     console.log("Number of tabs:", simplifiedTabs.length);
-
-    const readableTabData = JSON.stringify(simplifiedTabs, null, 2);
+    const readableTabData = JSON.stringify(
+        simplifiedTabs,
+        null,
+        2
+    );
 
     console.log("Prompt data length:", readableTabData.length);
-
     console.log("Sending request to Gemini...");
 
     const response = await ai.models.generateContent({
@@ -58,7 +61,18 @@ async function Connection_Create(tab_data) {
         contents: `
 Analyze these saved browser tabs and identify meaningful relationships between them.
 
-A relationship means that two tabs are related by topic, purpose, or subject.
+A relationship means that two tabs are meaningfully related by topic, subject, purpose, or the information they contain. Use the tab's title, URL, and summary to determine whether a relationship exists.
+
+For every relationship, assign a "relevance" score from 0.00 to 1.00 representing how strongly the two tabs are related.
+
+Relevance scale:
+- 0.00 = completely unrelated
+- 0.25 = weak relationship
+- 0.50 = moderately related
+- 0.75 = strongly related
+- 1.00 = extremely closely related
+
+Only return relationships with meaningful relevance. Do not return pairs that are essentially unrelated.
 
 Return ONLY valid JSON in exactly this format:
 
@@ -66,42 +80,65 @@ Return ONLY valid JSON in exactly this format:
     "connections": [
         {
             "tab1": "EXACT URL",
-            "tab2": "EXACT URL"
+            "tab2": "EXACT URL",
+            "relevance": 0.00
         }
     ]
 }
 
 Rules:
+
 - Only include meaningful relationships.
-- Do not connect unrelated tabs.
+- Do not connect tabs just because they are both websites or belong to the same broad category.
+- Consider the actual subject matter of the tabs.
+- Use the title, URL, and summary when determining relevance.
 - Do not connect a tab to itself.
-- Each relationship should appear only once.
-- Use the exact URLs provided.
+- Each pair of URLs must appear ONLY ONCE.
+- A relationship between A and B should appear as either:
+  {"tab1": "A", "tab2": "B", "relevance": 0.85}
+  OR
+  {"tab1": "B", "tab2": "A", "relevance": 0.85}
+  but NEVER both.
+- Do not return both A → B and B → A.
+- Use the EXACT URLs provided in the tab data.
+- Do not invent URLs.
+- Do not include duplicate pairs.
+- "relevance" must be a NUMBER, not a string.
+- "relevance" must be between 0.00 and 1.00.
+- Use two decimal places for the relevance score.
+- The relevance score should represent how strongly the two specific tabs are related, not how useful or important either tab is.
+- If two tabs have no meaningful relationship, do not connect them.
 - If there are no meaningful relationships, return:
 {"connections":[]}
+- Return ONLY the JSON object. Do not include explanations, markdown, or code fences.
 
 Saved tabs:
 
 ${readableTabData}
-        `,
+`,
 
         config: {
             thinkingConfig: {
                 thinkingLevel: "low"
             }
         }
-
     });
 
     console.log("Gemini responded!");
-
-    const text = response.text.trim();
-
-    console.log("Gemini response:", text);
-
-    const parsed = JSON.parse(text);
-
-    return parsed.connections;
+    let text = response.text.trim();
+    console.log("Raw Gemini response:", text);
+    if (text.startsWith("```")) {
+        text = text.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+    }
+    let parsed;
+    try {
+        parsed = JSON.parse(text);
+    } catch (error) {
+        console.error("FAILED TO PARSE GEMINI JSON:");
+        console.error(text);
+        throw new Error("Gemini returned invalid JSON");
+    }
+    return parsed.connections || [];
 }
 
 async function Organize(title, url) {
@@ -216,27 +253,33 @@ async function Generate_TabSummary(pageData, title) {
 }
 
 app.post("/connect", async (req, res) => {
+
     console.log("CONNECT REQUEST RECEIVED");
 
-    const timeout = setTimeout(() => {
+    const { tab_data } = req.body;
 
-        console.error("CONNECT TIMED OUT");
-
+    try {
+        const connection_data = await Promise.race([
+            Connection_Create(tab_data),
+            new Promise((_, reject) => {
+                setTimeout(() => {
+                    reject(new Error("Gemini connection request timed out"));
+                }, 30000);
+            })
+        ]);
+        console.log("CONNECT REQUEST FINISHED");
+        res.json({
+            connection_data: connection_data
+        });
+    } catch (error) {
+        console.error("CONNECT ERROR:", error);
         if (!res.headersSent) {
-            res.status(504).json({
-                error: "Connection generation timed out"
+            res.status(500).json({
+                error: error.message || "Unable to generate connections"
             });
         }
-
-    }, 30000);
-    const {tab_data} = req.body;
-    try {
-        const connection_data = await Connection_Create(tab_data);
-        res.json({connection_data:connection_data});
-    }catch(error){
-        console.error(error);
     }
-})
+});
 
 app.post("/organize", async (req, res) => {
     const {title, url} = req.body;
