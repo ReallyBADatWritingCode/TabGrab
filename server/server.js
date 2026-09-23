@@ -37,7 +37,8 @@ async function Register_UserMessage(message, tab_data){
 async function Connection_Create(tab_data){
     let connection_data = new Map()
     for(let node1 of tab_data){
-        connection_data.set(node1, [])
+        const node1Key = typeof node1 === 'object' ? node1.url || JSON.stringify(node1) : node1;
+        connection_data[node1Key] = [];
         for(let node2 of tab_data){
             const readableNode1 = JSON.stringify(node1 ?? {}, null, 2);
             const readableNode2 = JSON.stringify(node2 ?? {}, null, 2);
@@ -55,7 +56,9 @@ async function Connection_Create(tab_data){
                         }
                     }
             })
-            if(response.text.trim() == "YES") connection_data.set(node1, connection_data.get(node1).push(node2))
+            if(response.text.trim() === "YES") {
+                connection_data[node1Key].push(node2);
+            }
         }
     }
     return connection_data;
