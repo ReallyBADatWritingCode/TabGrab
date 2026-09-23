@@ -33,26 +33,40 @@ async function Register_UserMessage(message, tab_data){
     })
     return response.text.trim()
 }
+async function Connection_Create(tab_data) {
 
-async function Connection_Create(tab_data){
-    let connection_data = {}
+    console.log("Connection_Create started");
+
+    const simplifiedTabs = (tab_data || []).map(tab => ({
+        title: tab.title || "",
+        url: tab.url || "",
+        summary: tab.summary || ""
+    }));
+
+    console.log("Number of tabs:", simplifiedTabs.length);
+
+    const readableTabData = JSON.stringify(simplifiedTabs, null, 2);
+
+    console.log("Prompt data length:", readableTabData.length);
+
+    console.log("Sending request to Gemini...");
+
     const response = await ai.models.generateContent({
 
         model: "gemini-3.1-flash-lite",
 
         contents: `
-You are analyzing a collection of saved browser tabs.
+Analyze these saved browser tabs and identify meaningful relationships between them.
 
-Determine which tabs are meaningfully related based on their
-titles, URLs, summaries, and other available information.
+A relationship means that two tabs are related by topic, purpose, or subject.
 
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON in exactly this format:
 
 {
     "connections": [
         {
-            "tab1": "URL OF TAB 1",
-            "tab2": "URL OF TAB 2"
+            "tab1": "EXACT URL",
+            "tab2": "EXACT URL"
         }
     ]
 }
@@ -61,10 +75,10 @@ Rules:
 - Only include meaningful relationships.
 - Do not connect unrelated tabs.
 - Do not connect a tab to itself.
-- Each relationship should only appear once.
+- Each relationship should appear only once.
 - Use the exact URLs provided.
 - If there are no meaningful relationships, return:
-  {"connections":[]}
+{"connections":[]}
 
 Saved tabs:
 
@@ -78,10 +92,16 @@ ${readableTabData}
         }
 
     });
-   const text = response.text.trim();
-   console.log("AI connection response : ", text);
-   const parsed = JSON.parse(text);
-   return parsed.connections;
+
+    console.log("Gemini responded!");
+
+    const text = response.text.trim();
+
+    console.log("Gemini response:", text);
+
+    const parsed = JSON.parse(text);
+
+    return parsed.connections;
 }
 
 async function Organize(title, url) {
