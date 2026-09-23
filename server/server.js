@@ -35,7 +35,7 @@ async function Register_UserMessage(message, tab_data){
 }
 
 async function Connection_Create(tab_data){
-    let connection_data = new Map()
+    let connection_data = {}
     for(let node1 of tab_data){
         const node1Key = typeof node1 === 'object' ? node1.url || JSON.stringify(node1) : node1;
         connection_data[node1Key] = [];

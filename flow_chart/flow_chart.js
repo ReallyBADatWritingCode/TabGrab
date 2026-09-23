@@ -1,6 +1,6 @@
 let folders = [];
 
-let global_connections = new Map();
+let global_connections = {};
 
 const AI_Connect = async (tab_data) => {
   const resp = await fetch("https://tabgrab-server.onrender.com/connect", {
@@ -61,16 +61,18 @@ class TabNode {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    chrome.storage.local.get(["folders"], function(data) {
-        folders = data.folders || [];
-        folders.forEach(folder => {
-            folder.tabs = folder.tabs || [];
-            folder.tabs.forEach(tab => {
-                const node_container = document.querySelector(".nodes_container");
-                const nodeInstance = new TabNode(tab);
-                node_container.append(nodeInstance.element);
-            });
-        });
-    });
+document.addEventListener("DOMContentLoaded", async function() {
+    const data = await chrome.storage.local.get(["folders"]);
+    folders = data.folders || [];
+    const allTabs = [];
+    folders.forEach(folder => {
+        if(folder.tabs){
+            folder.tabs.forEach(tab => allTabs.push(tab));
+        }
+    })
+    if(allTabs.length > 0){
+        global_connections = await AI_Connect(allTabs)
+        console.log(global_connections)
+    }
+    
 });
