@@ -1,8 +1,6 @@
 # Tab Grab
 
-Tab Grab is a Chrome extension that saves tabs you want to come back to, automatically organizes them with AI, and helps you rediscover them later.
-
-People often open tabs intending to read, watch, or work on them later, but those tabs get buried among dozens of others. Tab Grab gives those tabs a dedicated place to go instead of letting them disappear.
+Tab Grab is a Chrome extension, that is my first ever chrome extension and I wanted to make it so that it could be used as a better book marker. Reducing manual labor and making sure that tabs that want to be saved are ai organized making it easier for users to go back to their tabs, and adding summary features that also help users organize their tabs better, with larger UI space compared to book marking and grouping tabs.
 
 ## Features
 
@@ -35,27 +33,51 @@ People often open tabs intending to read, watch, or work on them later, but thos
 
 ## How It Works
 
-When a user saves a tab, Tab Grab sends the title and URL to the backend. 
-The backend uses AI to organize the tab and generate a summary. 
-The resulting information is stored locally and displayed on the dashboard.
+When a user clicks Send to Dashboard, it firsts stores the tab using chrome.storage.local and then using the gemini API it inputs the tab data to return a topic which is what folder the tab is going to go to. It is able to run this API call through using a fetch call. Same can be done for the AI tab summary.
 
 ## Motivation
 
-I built Tab Grab because I frequently found myself opening articles, tutorials,
-videos, and other resources with the intention of coming back to them later.
-Eventually, I would have dozens of tabs open and lose track of what I actually
-wanted to use.
-
-Tab Grab is designed to turn those forgotten tabs into a personal library that
-can be organized and rediscovered.
+I built tab grab cause as I worked through things getting interested in learning new things, I always opened many videos, articles but never had the attention span to get back to them, resulting in large tab spaces. I ultimately tried doing bookmarking but that took lots of my time. I wanted to create a small extension experimenting with ideas I've had over the years and seeing what I can implement within a couple of weeks. I wanted tab grab to use as little user labor or input as possible.
 
 ## Installation
 
-1. Download or clone this repository.
-2. Open Chrome and go to `chrome://extensions`.
-3. Enable Developer Mode.
-4. Click "Load unpacked."
-5. Select the Tab Grab extension folder.
-6. Tab Grab will now appear in Chrome.
-(HAVE TO HAVE NODE.JS AND JS DOWNLOADED) Since as of submission the extension is still being reviewed for google extensions so just to be safe I'm are submitting like this.
-7. In terminal enter the server folder and run: node server.js
+### Requirements
+
+- Google Chrome
+- Node.js
+
+### 1. Clone the repository
+
+git clone YOUR_REPOSITORY_URL
+
+### 2. Install backend dependencies
+
+Open a terminal in the `server` folder and run:
+
+npm install
+
+### 3. Start the backend
+
+Run:
+
+node server.js
+
+### 4. Load the extension
+
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable Developer Mode.
+3. Click "Load unpacked."
+4. Select the Tab Grab extension folder.
+5. Tab Grab will now appear in Chrome.
+
+### 5. Use Tab Grab
+
+1. Open a tab you want to save.
+2. Right-click the tab.
+3. Select "Send To Dashboard."
+4. Tab Grab organizes and summarizes the tab using AI.
+5. Open the Tab Grab dashboard to view your saved content.
+
+
+### DEMO
+Demo video is shown in the Extneison working.mp4 (Sorry for bad spelling)
