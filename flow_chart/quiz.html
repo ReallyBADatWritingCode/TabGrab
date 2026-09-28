@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish -AR Preterite Conjugation Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-xl w-full bg-slate-800 rounded-2xl shadow-xl p-6 md:p-8 border border-slate-700">
+        <header class="mb-6 text-center">
+            <h1 class="text-2xl font-bold text-indigo-400">Spanish -AR Preterite Tense</h1>
+            <p id="progress-indicator" class="text-sm text-slate-400 mt-1">Question 1 of 10</p>
+        </header>
+
+        <div id="quiz-container">
+            <div id="question-text" class="text-lg font-medium mb-6 text-slate-200">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div id="feedback-container" class="hidden mb-6 p-4 rounded-lg text-sm">
+                <!-- Feedback injected via JS -->
+            </div>
+
+            <button id="next-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 hidden">
+                Next Question
+            </button>
+        </div>
+
+        <div id="results-container" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-indigo-400 mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-xl mb-6 text-slate-300"></p>
+            <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-xl transition duration-200">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "For *yo* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-é", "-aste", "-ó", "-aron"],
+                correct: 0,
+                rationale: "In the preterite (past) tense, regular -AR verbs take the *-é* ending for the first-person singular (*yo*)."
+            },
+            {
+                question: "For *tú* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-é", "-aste", "-ó", "-amos"],
+                correct: 1,
+                rationale: "For the informal second-person singular (*tú*), regular -AR verbs use the *-aste* ending in the preterite tense."
+            },
+            {
+                question: "For *él / ella / usted* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aste", "-aron", "-ó", "-amos"],
+                correct: 2,
+                rationale: "For third-person singular subjects (*él*, *ella*, *usted*), the regular -AR preterite ending is *-ó*."
+            },
+            {
+                question: "For *nosotros / nosotras* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-amos", "-aroo", "-asteis", "-aron"],
+                correct: 0,
+                rationale: "For first-person plural (*nosotros/nosotras*), the regular -AR preterite ending is identical to the present tense form (*-amos*), though context determines the tense."
+            },
+            {
+                question: "For *vosotros / vosotras* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aste", "-asteis", "-aron", "-ó"],
+                correct: 1,
+                rationale: "For second-person plural used primarily in Spain (*vosotros/vosotras*), regular -AR verbs take the *-asteis* ending."
+            },
+            {
+                question: "For *ellos / ellas / ustedes* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aron", "-amos", "-asteis", "-an"],
+                correct: 2, // Wait, let's fix this index carefully or make sure options are correct
+                // Let's re-verify options array: ["-aron", "-amos", "-asteis", "-an"] -> correct is -aron, which is index 0! Let's correct it below.
+            },
+            {
+                question: "For *ellos / ellas / ustedes* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aron", "-ó", "-aste", "-amos"],
+                correct: 0,
+                rationale: "For third-person plural subjects (*ellos*, *ellas*, *ustedes*), regular -AR verbs take the *-aron* ending in the preterite tense."
+            },
+            {
+                question: "In the preterite tense, which ending corresponds specifically to the pronoun *yo* for regular -AR verbs?",
+                options: ["-ó", "-aste", "-é", "-aron"],
+                correct: 2,
+                rationale: "The accent mark on *-é* is crucial for *yo* because without it, it looks like a third-person present tense ending or noun."
+            },
+            {
+                question: "Which preterite ending matches the subject pronoun *tú* when conjugating standard -AR verbs?",
+                options: ["-aste", "-é", "-aron", "-ó"],
+                correct: 0,
+                rationale: "The ending *-aste* indicates that the person being spoken to informally performed an action in the past."
+            },
+            {
+                question: "When speaking about a group including yourself and others (*nosotros*) in the past tense using an -AR verb, which ending is used?",
+                options: ["-amos", "-aron", "-asteis", "-é"],
+                correct: 0,
+                rationale: "The *-amos* ending is used for *nosotros* in both the present and preterite tenses for -AR verbs."
+            },
+            {
+                question: "For a collective formal group or plural third-person (*ustedes*) with a regular -AR verb in the preterite, what ending is appended?",
+                options: ["-aron", "-aron", "-aron", "-aron"] // wait, let's make sure distractors are distinct!
+            }
+        ];
+
+        // Let's clean up the questions list cleanly to ensure unique options and correct indices
+        const cleanQuestions = [
+            {
+                question: "For *yo* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-é", "-aste", "-ó", "-aron"],
+                correct: 0,
+                rationale: "In the preterite (past) tense, regular -AR verbs take the *-é* ending for the first-person singular (*yo*)."
+            },
+            {
+                question: "For *tú* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-é", "-aste", "-ó", "-amos"],
+                correct: 1,
+                rationale: "For the informal second-person singular (*tú*), regular -AR verbs use the *-aste* ending in the preterite tense."
+            },
+            {
+                question: "For *él / ella / usted* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aste", "-aron", "-ó", "-amos"],
+                correct: 2,
+                rationale: "For third-person singular subjects (*él*, *ella*, *usted*), the regular -AR preterite ending is *-ó*."
+            },
+            {
+                question: "For *nosotros / nosotras* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-amos", "-aste", "-asteis", "-aron"],
+                correct: 0,
+                rationale: "For first-person plural (*nosotros/nosotras*), the regular -AR preterite ending is *-amos*."
+            },
+            {
+                question: "For *vosotros / vosotras* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aste", "-asteis", "-aron", "-ó"],
+                correct: 1,
+                rationale: "For second-person plural used primarily in Spain (*vosotros/vosotras*), regular -AR verbs take the *-asteis* ending."
+            },
+            {
+                question: "For *ellos / ellas / ustedes* and for a verb that ends with -AR what is the past tense ending?",
+                options: ["-aron", "-ó", "-aste", "-amos"],
+                correct: 0,
+                rationale: "For third-person plural subjects (*ellos*, *ellas*, *ustedes*), regular -AR verbs take the *-aron* ending in the preterite tense."
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackContainer = document.getElementById("feedback-container");
+        const nextBtn = document.getElementById("next-btn");
+        const progressIndicator = document.getElementById("progress-indicator");
+        const quizContainer = document.getElementById("quiz-container");
+        const resultsContainer = document.getElementById("results-container");
+        const scoreText = document.getElementById("score-text");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackContainer.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+
+            const q = cleanQuestions[currentIndex];
+            progressIndicator.innerText = `Question ${currentIndex + 1} of ${cleanQuestions.length}`;
+            questionText.innerHTML = q.question;
+
+            optionsContainer.innerHTML = "";
+            q.options.forEach((option, index) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left bg-slate-700 hover:bg-slate-600 text-slate-100 font-medium py-3 px-4 rounded-xl border border-slate-600 transition duration-150";
+                btn.innerText = option;
+                btn.onclick = () => selectOption(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const q = cleanQuestions[currentIndex];
+            const buttons = optionsContainer.children;
+
+            if (selectedIndex === q.correct) {
+                score++;
+                buttons[selectedIndex].classList.remove("bg-slate-700", "border-slate-600", "hover:bg-slate-600");
+                buttons[selectedIndex].classList.add("bg-emerald-600", "border-emerald-500");
+                feedbackContainer.className = "mb-6 p-4 rounded-lg text-sm bg-emerald-950 text-emerald-200 border border-emerald-800";
+                feedbackContainer.innerHTML = `<strong>Correct!</strong> ${q.rationale}`;
+            } else {
+                buttons[selectedIndex].classList.remove("bg-slate-700", "border-slate-600", "hover:bg-slate-600");
+                buttons[selectedIndex].classList.add("bg-rose-600", "border-rose-500");
+                buttons[q.correct].classList.remove("bg-slate-700", "border-slate-600", "hover:bg-slate-600");
+                buttons[q.correct].classList.add("bg-emerald-600", "border-emerald-500");
+                feedbackContainer.className = "mb-6 p-4 rounded-lg text-sm bg-rose-950 text-rose-200 border border-rose-800";
+                feedbackContainer.innerHTML = `<strong>Incorrect.</strong> ${q.rationale}`;
+            }
+
+            feedbackContainer.classList.remove("hidden");
+            nextBtn.classList.remove("hidden");
+        }
+
+        nextBtn.onclick = () => {
+            currentIndex++;
+            if (currentIndex < cleanQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            quizContainer.classList.add("hidden");
+            resultsContainer.classList.remove("hidden");
+            scoreText.innerText = `You scored ${score} out of ${cleanQuestions.length}!`;
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            resultsContainer.classList.add("hidden");
+            quizContainer.classList.remove("hidden");
+            loadQuestion();
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
+```eof
+
+I've created an interactive quiz file (`spanish_conjugation_quiz.html`) with clickable answer options and immediate feedback, using your exact requested prompt format for Spanish preterite tense endings! Give it a try and have fun practicing!

@@ -6,7 +6,7 @@ let closeSideBar_button = document.querySelector(".closeSideBar");
 let sideBar = document.querySelector(".SideBar");
 let sideBar_selected = document.querySelector(".SideBar_Selected");
 let sideBar_not_selected = document.querySelector(".SideBar_Not_Selected");
-
+/*
 let closeChatBot_button = document.querySelector(".close_chat");
 let openChatBot_button = document.querySelector(".open_chat");
 let chatBot_UI = document.querySelector(".ChatBot");
@@ -14,7 +14,7 @@ let chatBot_input = document.querySelector("#Message_Input");
 let chatForm = document.querySelector(".chat_form");
 let chatMessages = document.querySelector(".chat_messages");
 
-let open_flowChart = document.querySelector(".open_flow");
+let open_flowChart = document.querySelector(".open_flow");*/
 
 let name_input = document.getElementById("nameInput")
 let enter_right = document.querySelector(".Enter-Right")
@@ -43,6 +43,7 @@ const summaryFailures = new Map();
 
 const normalizeUrl = (url) => /^[a-z][a-z\d+.-]*:/i.test(url) ? url : `https://${url}`;
 
+/*
 const fetchChat_Response = async (message, tab_data) => {
     const response = await fetch("https://tabgrab-server.onrender.com/chat", {
         method: "POST",
@@ -67,7 +68,7 @@ const addChatMessage = (text, type) => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return messageElement;
 };
-
+*/
 const fetchTabSummary = async (title, url) => {
     const response = await fetch("https://tabgrab-server.onrender.com/summarize", {
         method: "POST",
@@ -505,18 +506,19 @@ const OpenSideBar = () => {
     sideBar.style.animationName = 'OpenSideBarAnim';
     sideBar.style.animationDuration = '0.3s';
     openSideBar_button.style.display = 'none';
-    openChatBot_button.style.display = "none";
+    //openChatBot_button.style.display = "none";
 }
 
 const CloseSideBar = () => {
     sideBar.style.animation = 'CloseSideBarAnim 0.3s forwards';
     setTimeout(() => {
         sideBar.style.display = 'none';
-        openChatBot_button.style.display = "flex";
+        //openChatBot_button.style.display = "flex";
         openSideBar_button.style.display = 'block';
     }, 300);
 }
 
+/*
 const openChatBot = () => {
     chatBot_UI.style.display = "flex";
     openChatBot_button.style.display = "none";
@@ -551,7 +553,7 @@ const sendMessage = async () => {
         chatBot_input.disabled = false;
         chatBot_input.focus();
     }
-};
+};*/
 
 newFolder_button.onclick = () => {
     NewFolder("Folder");
@@ -564,7 +566,7 @@ openSideBar_button.onclick = () => {
 closeSideBar_button.onclick = () => {
     CloseSideBar();
 }
-
+/*
 openChatBot_button.onclick = () => {
     openChatBot()
 }
@@ -580,4 +582,4 @@ chatForm.onsubmit = (event) => {
 
 open_flowChart.onclick = () => {
     chrome.tabs.create({ url: chrome.runtime.getURL("flow_chart/flow_chart.html") });
-}
+}*/

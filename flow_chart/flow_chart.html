@@ -8,7 +8,37 @@
 </head>
 <body>
     <main class="nodes_container">
-        
+        <div class="flow_world">
+            <svg id="connections">
+                <defs>
+                    <filter id="lineGlow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+        <div class="sideBar">
+            <label id="relevance">Relevance : </label>
+            <label class="Relevance_Result"></label>
+            <div class="Tab1_Info">
+                <img class="tab_icon" id="tab1_icon" src=""><img>
+                <label class="Tab_Title" id="Tab1_Title"></label>
+                <div class="link">
+                    <label class="link_label" id="link1_label">Link</label>
+                </div>
+            </div>
+            <div class="Tab2_Info">
+                <img class="tab_icon" id="tab2_icon" src=""><img>
+                <label class="Tab_Title" id="Tab2_Title"></label>
+                <div class="link">
+                    <label class="link_label" id="link2_label">Link</label>
+                </div>
+            </div>
+        </div>
     </main>
 </body>
 <script type="module" src="flow_chart.js"></script>

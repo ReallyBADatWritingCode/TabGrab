@@ -53,12 +53,21 @@ async function Connection_Create(tab_data) {
 
     console.log("Prompt data length:", readableTabData.length);
     console.log("Sending request to Gemini...");
+    const storageData = await chrome.storage.local.get([
+        "global_connections"
+    ]);
+
+    const global_connections =
+        storageData.global_connections || [];
+    
+    console.log(global_connections);
 
     const response = await ai.models.generateContent({
 
         model: "gemini-3.1-flash-lite",
 
         contents: `
+        Current Global connections : ${JSON.stringify(global_connections, null, 2)}
 Analyze these saved browser tabs and identify meaningful relationships between them.
 
 A relationship means that two tabs are meaningfully related by topic, subject, purpose, or the information they contain. Use the tab's title, URL, and summary to determine whether a relationship exists.
@@ -88,6 +97,8 @@ Return ONLY valid JSON in exactly this format:
 
 Rules:
 
+- DON'T CALCULATE THE RELEVANCE OF ALREADY EXISTING CONNECTIONS!!!!
+- Return global connections array with your new connections found
 - Only include meaningful relationships.
 - Do not connect tabs just because they are both websites or belong to the same broad category.
 - Consider the actual subject matter of the tabs.
