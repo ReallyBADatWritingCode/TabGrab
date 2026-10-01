@@ -1,23 +1,26 @@
 # Tab Grab
 
-Tab Grab is a Chrome extension, that is my first ever chrome extension and I wanted to make it so that it could be used as a better book marker. Reducing manual labor and making sure that tabs that want to be saved are ai organized making it easier for users to go back to their tabs, and adding summary features that also help users organize their tabs better, with larger UI space compared to book marking and grouping tabs.
+Tab Grab is a chrome extension that basically enhances Bookmarking, with more advanced organization features and requires less manual labor from the user.
 
-## Features
+Overall this project was created due to a problem that I faced constantly the past few years as an aspiring programmer. I constantly wished to learn more concepts
+in programming, but my attention span was so low that I always procrastinated on focusing on the articles and videos I had opened up and proceeded to doomscroll. 
+Overtime as I opened more and more articles, over the day without feeling the mood to read, I would reopen the following day ready to learn with so many articles
+that I had to first organize in order to even start reading and researching. My first instinct was to use bookmarking in browser. However, bookmarking would ultimately
+create an unorganized list that I would need lots of manual labor and thinking to organize into folders. That was overall my biggest problem. I decided to make an extension
+that could solve that need of manual labor.
 
-- Save tabs to a dedicated dashboard
-- AI-powered tab organization
-- AI-generated summaries
-- Search saved tabs
-- Organize tabs into folders
-- Automatically close and save tabs after a timer
+# API Key
+Gemini API Key
 
-## How to Use
+# Key Features
+- Right Clicking tab and clicking "Send to Dashboard" Will send a tab to your dashboard and will proceed to AI organize it into folders based on topics
+- Auto tab closer and sorter that when you start a timer it will close automatically close tabs and send to dashboard after a timer has gone off.
+- Summarizes individual tab's page content into a block of text.
+- Able to manually create tabs and folders by yourself, includes editing tab and folder contents.
 
-1. Open a tab you want to save.
-2. Right-click the tab.
-3. Select "Send To Dashboard."
-4. Tab Grab summarizes and organizes the tab.
-5. Open the Tab Grab dashboard to view your saved content.
+# Future features
+- Flow chart(similar to Obsidian) connecting tabs based on relevance
+- Chat bot
 
 ## Built With
 
@@ -30,59 +33,21 @@ Tab Grab is a Chrome extension, that is my first ever chrome extension and I wan
 - Google Gemini API
 - Chrome Storage API
 - Chrome Notifications API
+- Render Free Server
 
-## How It Works
+### How to Download
+1) Click the most recent release
+2) Download the zip file and uncompress it
+3) Go to manage your extensions(edge://extensions or chrome://extensions) and enter in developer mode.
+4) Click load unpacked and select your uncompressed folder
+5) YOUR GOOD TO GO!
 
-When a user clicks Send to Dashboard, it firsts stores the tab using chrome.storage.local and then using the gemini API it inputs the tab data to return a topic which is what folder the tab is going to go to. It is able to run this API call through using a fetch call. Same can be done for the AI tab summary.
-
-## Motivation
-
-I built tab grab cause as I worked through things getting interested in learning new things, I always opened many videos, articles but never had the attention span to get back to them, resulting in large tab spaces. I ultimately tried doing bookmarking but that took lots of my time. I wanted to create a small extension experimenting with ideas I've had over the years and seeing what I can implement within a couple of weeks. I wanted tab grab to use as little user labor or input as possible.
-
-## Installation
-
-### Requirements
-
-- Google Chrome
-- Node.js
-
-### 1. Clone the repository
-
-git clone YOUR_REPOSITORY_URL
-
-### 2. Install backend dependencies
-
-Open a terminal in the `server` folder and run:
-
-npm install
-
-### 3. Start the backend
-
-Run:
-
-node server.js
-
-### 4. Load the extension
-
-1. Open Chrome and go to `chrome://extensions/`.
-2. Enable Developer Mode.
-3. Click "Load unpacked."
-4. Select the Tab Grab extension folder.
-5. Tab Grab will now appear in Chrome.
-
-### 5. Use Tab Grab
-
-1. Open a tab you want to save.
-2. Right-click the tab.
-3. Select "Send To Dashboard."
-4. Tab Grab organizes and summarizes the tab using AI.
-5. Open the Tab Grab dashboard to view your saved content.
-
+***Warnings!!! Tab Grab is running on a Free Render server! So Tab grab may slow at sending tabs to your dashboard! If it isn't sent within a minute or two,
+it means the gemini API is under going too many requests, and will require you to close and reopen your dashboard from your popup***
 
 ### DEMO
 Demo video is shown in the Extneison working.mp4 (Sorry for bad spelling)
 
 ### Credits
-Me & AI
-
-AI - Automatic timer and automatic tab closer
+AI - Automatic tab closer
+Me - Everything else
