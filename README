@@ -33,7 +33,7 @@ Gemini API Key
 - Google Gemini API
 - Chrome Storage API
 - Chrome Notifications API
-- Render Free Server
+- Hackclub backend
 
 ### How to Download
 1) Click the most recent release
@@ -42,8 +42,7 @@ Gemini API Key
 4) Click load unpacked and select your uncompressed folder
 5) YOUR GOOD TO GO!
 
-***Warnings!!! Tab Grab is running on a Free Render server! So Tab grab may slow at sending tabs to your dashboard! If it isn't sent within a minute or two,
-it means the gemini API is under going too many requests, and will require you to close and reopen your dashboard from your popup***
+***Beta test issue: Tab grab is a little slow due to the fact that the gemini API is under going too many requests, and will require you to close and reopen your dashboard from your popup***
 
 ### DEMO
 Demo video is shown in the Extneison working.mp4 (Sorry for bad spelling)
